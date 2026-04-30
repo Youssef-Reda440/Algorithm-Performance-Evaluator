@@ -1,3 +1,10 @@
 backend/.env
 frontend/target
 .vscode/
+backend/__pycache__/
+backend/analyzer/__pycache__/
+backend/executor/__pycache__/
+backend/generator/__pycache__/
+backend/models/__pycache__/
+backend/timer/__pycache__/
+
