@@ -1,19 +1,19 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-#  REQUEST
+# REQUEST
 class AnalysisRequest(BaseModel):
     code : str            
     array: Optional[str] = ""   
     size : Optional[str] = ""  
     mode : str   
 
-#  CHART POINT
+# CHART POINT
 class ChartPoint(BaseModel):
     n   : int           
     time: float   
 
-#  RESPONSE 
+# RESPONSE 
 class AnalysisResponse(BaseModel):
     complexity : str         
     description: str          
