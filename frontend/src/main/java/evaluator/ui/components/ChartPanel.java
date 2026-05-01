@@ -1,4 +1,4 @@
-package src.main.java.evaluator.ui.components;
+package evaluator.ui.components;
 
 public class ChartPanel {
     
