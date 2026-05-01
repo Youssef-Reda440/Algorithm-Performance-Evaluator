@@ -1,5 +1,6 @@
 package evaluator.ui;
 
+import evaluator.controller.DashboardController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -150,9 +151,9 @@ public class Dashboard {
                 + "-fx-background-radius: 4;");
 
         sizeField.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal == null || newVal.trim().isEmpty()) {
+            if (newVal == null || newVal.trim().isEmpty())
                 nLabel.setText("n = 0");
-            } else {
+            else {
                 try {
                     int n = Integer.parseInt(newVal.trim());
                     nLabel.setText("n = " + n);
@@ -162,13 +163,15 @@ public class Dashboard {
             }
         });
 
-        bottomBar.getChildren().addAll(
-                arrayLabel, arrayField,
-                sizeLabel, sizeField,
-                nLabel);
+        bottomBar.getChildren().addAll(arrayLabel, arrayField, sizeLabel, sizeField, nLabel);
 
         inputPanel.getChildren().addAll(editorHeader, codeArea, bottomBar);
         HBox.setHgrow(inputPanel, Priority.ALWAYS);
+        
+
+        Label bestLabel  = new Label("O(n)");
+        Label avgLabel   = new Label("O(n²)");
+        Label worstLabel = new Label("O(n²)");
 
         // RIGHT PANEL
         VBox resultPanel = new VBox(16);
@@ -263,6 +266,16 @@ public class Dashboard {
 
         root.setTop(topBar);
         root.setCenter(centerLayout);
+
+        //  CONNECT CONTROLLER
+        DashboardController controller = new DashboardController(
+            codeArea, arrayField, sizeField,
+            manualBtn, runBtn,
+            complexityValue, complexityDesc, confidenceBar,
+            bestLabel, avgLabel, worstLabel
+        );
+
+        runBtn.setOnAction(e -> controller.onRunAnalysis());
     }
 
     private void styleToggleButton(ToggleButton btn) {
