@@ -104,7 +104,7 @@ public class DashboardController {
             });
         });
 
-        // Start background thread ──────────────────────────────────
+        // Start background thread
         Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
