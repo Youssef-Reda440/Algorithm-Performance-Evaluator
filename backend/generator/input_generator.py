@@ -2,8 +2,7 @@ import random
 
 class InputGenerator:
 
-    AUTO_SIZES = [1000, 3000, 5000, 8000, 10000]
-
+    AUTO_SIZES = [1000, 2000, 5000, 10000]
     def generate_random(self, n: int) -> list[int]:
         if n <= 0:
             raise ValueError("Size must be positive")
