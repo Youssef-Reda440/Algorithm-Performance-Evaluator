@@ -22,7 +22,7 @@ class Timer:
         time_ms = (end - start) * 1000
         return round(time_ms, 4)
 
-    def measure_average(self, code: str, arr: list[int], runs: int = 3) -> float:
+    def measure_average(self, code: str, arr: list[int], runs: int = 5) -> float:
 
         times = []
         for _ in range(runs):
