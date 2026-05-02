@@ -2,26 +2,30 @@ import random
 
 class InputGenerator:
 
-    # GENERATE RANDOM ARRAY
+    AUTO_SIZES = [100, 500, 1000]
+
     def generate_random(self, n: int) -> list[int]:
+        if n <= 0:
+            raise ValueError("Size must be positive")
         return [random.randint(1, 1000) for _ in range(n)]
 
-    # GENERATE SORTED ARRAY 
     def generate_sorted(self, n: int) -> list[int]:
+        if n <= 0:
+            return []
         return list(range(1, n + 1))
 
-    # GENERATE REVERSED ARRAY
     def generate_reversed(self, n: int) -> list[int]:
+        if n <= 0:
+            return []
         return list(range(n, 0, -1))
 
-    # PARSE USER ARRAY
     def parse_array(self, array_str: str) -> list[int]:
+        if not array_str.strip():
+            return []
         try:
             return [int(x) for x in array_str.strip().split()]
         except ValueError:
-            raise ValueError(f"Invalid array input: '{array_str}'"
-                             " — please enter integers separated by spaces.")
+            raise ValueError("Invalid array input. Use space-separated integers.")
 
-    # GET ALL AUTO SIZES
     def get_auto_sizes(self) -> list[int]:
-        return [100, 500, 1000]
+        return self.AUTO_SIZES
