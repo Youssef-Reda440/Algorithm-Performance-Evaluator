@@ -13,6 +13,11 @@ class ChartPoint(BaseModel):
     n   : int
     time: float
 
+# CANDIDATE CLASS
+class Candidate(BaseModel):
+    name : str     
+    score: float  
+
 # RESPONSE
 class AnalysisResponse(BaseModel):
     complexity : str
@@ -22,3 +27,4 @@ class AnalysisResponse(BaseModel):
     avg        : str
     worst      : str
     chart_data : List[ChartPoint] = Field(default_factory=list)
+    candidates : List[Candidate]   = Field(default_factory=list)

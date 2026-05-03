@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(__file__))
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.schemas import AnalysisRequest, AnalysisResponse, ChartPoint
+from models.schemas import AnalysisRequest, AnalysisResponse, ChartPoint, Candidate
 from timer.timer import Timer
 from analyzer.complexity_analyzer import ComplexityAnalyzer
 from generator.input_generator import InputGenerator
@@ -58,6 +58,11 @@ def build_response(results, best_results, worst_results, chart_data) -> Analysis
     best_analysis  = analyzer.analyze(best_results)
     worst_analysis = analyzer.analyze(worst_results)
 
+    candidates = [
+        Candidate(name=c["name"], score=c["score"])
+        for c in analysis["candidates"][:3]
+    ]
+
     return AnalysisResponse(
         complexity  = analysis["complexity"],
         description = analysis["description"],
@@ -65,7 +70,8 @@ def build_response(results, best_results, worst_results, chart_data) -> Analysis
         best        = best_analysis["complexity"],
         avg         = analysis["complexity"],
         worst       = worst_analysis["complexity"],
-        chart_data  = chart_data
+        chart_data  = chart_data,
+        candidates  = candidates 
     )
 
 @app.get("/")
@@ -86,7 +92,11 @@ def analyze(request: AnalysisRequest):
             results, best_results, worst_results, chart_data = run_benchmark(request.code, sizes)
 
             # Insert user data point at the beginning
-            results.insert(0,    {"n": len(arr), "time": time_ms})
+            if len(arr) >= 100 :
+                results.insert(0, {"n": len(arr), "time": time_ms}) 
+                best_results.insert(0, {"n": len(arr), "time": time_ms})
+                worst_results.insert(0, {"n": len(arr), "time": time_ms})
+
             chart_data.insert(0, ChartPoint(n=len(arr), time=time_ms))
 
             return build_response(results, best_results, worst_results, chart_data)
