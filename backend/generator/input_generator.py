@@ -2,7 +2,7 @@ import random
 
 class InputGenerator:
 
-    AUTO_SIZES = [5000, 10000, 30000, 50000]
+    AUTO_SIZES = [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000]
     
     def generate_random(self, n: int) -> list[int]:
         if n <= 0:

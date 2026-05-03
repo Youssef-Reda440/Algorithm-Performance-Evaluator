@@ -28,6 +28,8 @@ timer     = Timer()
 analyzer  = ComplexityAnalyzer()
 generator = InputGenerator()
 
+MAX_TIME_MS = 2000  # 2 seconds per size
+
 def run_benchmark(code: str, sizes: list[int]) -> tuple:
 
     results       = []
@@ -36,7 +38,7 @@ def run_benchmark(code: str, sizes: list[int]) -> tuple:
     chart_data    = []
 
     for n in sizes:
-        # AVG 
+        # AVG
         t_avg = timer.measure_average(code, generator.generate_random(n))
 
         # BEST
@@ -45,10 +47,14 @@ def run_benchmark(code: str, sizes: list[int]) -> tuple:
         # WORST
         t_worst = timer.measure_average(code, generator.generate_reversed(n))
 
-        results.append({"n": n, "time": t_avg})
-        best_results.append({"n": n, "time": t_best})
+        results.append(      {"n": n, "time": t_avg})
+        best_results.append( {"n": n, "time": t_best})
         worst_results.append({"n": n, "time": t_worst})
         chart_data.append(ChartPoint(n=n, time=t_avg))
+
+        if t_avg > MAX_TIME_MS or t_best > MAX_TIME_MS or t_worst > MAX_TIME_MS:
+            print(f"Early stop at n={n} — time exceeded {MAX_TIME_MS}ms")
+            break
 
     return results, best_results, worst_results, chart_data
 
@@ -71,7 +77,7 @@ def build_response(results, best_results, worst_results, chart_data) -> Analysis
         avg         = analysis["complexity"],
         worst       = worst_analysis["complexity"],
         chart_data  = chart_data,
-        candidates  = candidates 
+        candidates  = candidates
     )
 
 @app.get("/")
@@ -85,16 +91,16 @@ def analyze(request: AnalysisRequest):
         sizes = generator.get_auto_sizes()
 
         if request.mode == "MANUAL":
-            # Parse user array & measure it
+
             arr     = generator.parse_array(request.array)
-            time_ms = timer.measure_average(request.code, arr)
+            time_ms = timer.measure_average(request.code, arr, runs=1)
 
-            results, best_results, worst_results, chart_data = run_benchmark(request.code, sizes)
+            results, best_results, worst_results, chart_data = run_benchmark(
+                request.code, sizes)
 
-            # Insert user data point at the beginning
-            if len(arr) >= 100 :
-                results.insert(0, {"n": len(arr), "time": time_ms}) 
-                best_results.insert(0, {"n": len(arr), "time": time_ms})
+            if len(arr) >= 100:
+                results.insert(0,       {"n": len(arr), "time": time_ms})
+                best_results.insert(0,  {"n": len(arr), "time": time_ms})
                 worst_results.insert(0, {"n": len(arr), "time": time_ms})
 
             chart_data.insert(0, ChartPoint(n=len(arr), time=time_ms))
@@ -102,7 +108,9 @@ def analyze(request: AnalysisRequest):
             return build_response(results, best_results, worst_results, chart_data)
 
         elif request.mode == "AUTO":
-            results, best_results, worst_results, chart_data = run_benchmark(request.code, sizes)
+
+            results, best_results, worst_results, chart_data = run_benchmark(
+                request.code, sizes)
 
             return build_response(results, best_results, worst_results, chart_data)
 
