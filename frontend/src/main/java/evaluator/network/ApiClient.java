@@ -1,11 +1,14 @@
 package evaluator.network;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import evaluator.model.AnalysisResponse;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 public class ApiClient {
@@ -20,7 +23,7 @@ public class ApiClient {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(TIMEOUT))
                 .build();
-        this.gson = new Gson();
+        this.gson = new GsonBuilder().serializeNulls().create();
     }
 
     public AnalysisResponse analyze(String code, String arrayInput,
@@ -30,12 +33,14 @@ public class ApiClient {
         AnalysisRequest requestBody = new AnalysisRequest(code, arrayInput, sizeInput, mode);
         String jsonBody = gson.toJson(requestBody);
 
+        System.out.println("JSON: " + jsonBody);
+
         // Build HTTP POST request 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/analyze"))
-                .header("Content-Type", "application/json")
+                .header("Content-Type", "application/json; charset=UTF-8")
                 .timeout(Duration.ofSeconds(TIMEOUT))
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
                 .build();
 
         // Send request and get response 
@@ -48,10 +53,13 @@ public class ApiClient {
                     + "\n" + response.body());
         }
 
+        System.out.println(response.body());
+
         // Convert JSON response → AnalysisResponse object
         return gson.fromJson(response.body(), AnalysisResponse.class);
     }
 
+    @SuppressWarnings("unused")
     private static class AnalysisRequest {
         private final String code;
         private final String array;
