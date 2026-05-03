@@ -11,7 +11,7 @@ import java.time.Duration;
 public class ApiClient {
 
     private static final String BASE_URL = "http://localhost:8000";
-    private static final int    TIMEOUT  = 30;
+    private static final int    TIMEOUT  = 120;
 
     private final HttpClient httpClient;
     private final Gson gson;

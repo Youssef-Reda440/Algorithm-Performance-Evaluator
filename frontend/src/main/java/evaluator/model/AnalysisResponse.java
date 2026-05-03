@@ -11,13 +11,21 @@ public class AnalysisResponse {
     private String avg;             
     private String worst;         
     private List<ChartPoint> chart_data; 
-
+    private List<Candidate> candidates;
+    
     public static class ChartPoint {
         private int n;         
         private double time;    
 
         public int getN()         { return n; }
         public double getTime()   { return time; }
+    }
+
+    public static class Candidate {
+        private String name;
+        private double score;
+        public String getName()  { return name; }
+        public double getScore() { return score; }
     }
 
     public String getComplexity()           { return complexity; }
@@ -27,6 +35,7 @@ public class AnalysisResponse {
     public String getAvg()                  { return avg; }
     public String getWorst()                { return worst; }
     public List<ChartPoint> getChartData()  { return chart_data; }
+    public List<Candidate>  getCandidates() { return candidates; }
 
     // FALLBACK => Return safe defaults if Python returns null
     public String getComplexitySafe() {
