@@ -10,6 +10,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 
 public class Dashboard {
 
@@ -212,6 +214,15 @@ public class Dashboard {
                 detectedLabel, complexityValue, complexityDesc,
                 confidenceLabel, confidenceBar);
 
+        Label candidateLabel1 = new Label("O(n²)");
+        Label candidateLabel2 = new Label("O(n² log n)");
+        Label candidateLabel3 = new Label("O(n³)");
+
+        ProgressBar candidateBar1 = new ProgressBar(0.90);
+        ProgressBar candidateBar2 = new ProgressBar(0.30);
+        ProgressBar candidateBar3 = new ProgressBar(0.10);
+
+        // Candidate Card
         VBox candidateCard = new VBox(8);
         candidateCard.setPadding(new Insets(12));
         candidateCard.setStyle(
@@ -224,10 +235,11 @@ public class Dashboard {
 
         candidateCard.getChildren().addAll(
                 candidateTitle,
-                candidateRow("O(n²)",       0.90, "#00d4ff"),
-                candidateRow("O(n² log n)", 0.30, "#4444cc"),
-                candidateRow("O(n³)",       0.10, "#cc4444"));
+                candidateRow(candidateLabel1, candidateBar1, "#00d4ff"),
+                candidateRow(candidateLabel2, candidateBar2, "#4444cc"),
+                candidateRow(candidateLabel3, candidateBar3, "#cc4444"));
 
+        // Chart Card
         VBox chartCard = new VBox(8);
         chartCard.setPadding(new Insets(12));
         chartCard.setStyle(
@@ -239,27 +251,35 @@ public class Dashboard {
         chartTitle.setStyle("-fx-text-fill: #8888aa; -fx-font-size: 10px; "
                 + "-fx-font-weight: bold;");
 
-        Pane chartPlaceholder = new Pane();
-        chartPlaceholder.setStyle("-fx-background-color: #0d0d1a; "
-                + "-fx-background-radius: 6;");
-        chartPlaceholder.setPrefHeight(140);
-        VBox.setVgrow(chartPlaceholder, Priority.ALWAYS);
+        // X and Y Axes
+        NumberAxis xAxis = new NumberAxis();
+        xAxis.setLabel("Input Size (n)");
+        xAxis.setStyle("-fx-tick-label-fill: #8888aa; -fx-font-size: 10px;");
 
-        Label chartHint = new Label("n=10                                    n=1000");
-        chartHint.setStyle("-fx-text-fill: #555577; -fx-font-size: 10px;");
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Time (ms)");
+        yAxis.setStyle("-fx-tick-label-fill: #8888aa; -fx-font-size: 10px;");
 
-        // BEST / AVG / WORST
+        // LineChart
+        LineChart<Number, Number> runtimeChart = new LineChart<>(xAxis, yAxis);
+        runtimeChart.setStyle("-fx-background-color: #0d0d1a;");
+        runtimeChart.setLegendVisible(false);
+        runtimeChart.setAnimated(false);
+        runtimeChart.setPrefHeight(160);
+        runtimeChart.setCreateSymbols(true);
+        VBox.setVgrow(runtimeChart, Priority.ALWAYS);
+
+        // BEST / AVG / WORST 
         HBox statsRow = new HBox();
         statsRow.setAlignment(Pos.CENTER);
         statsRow.getChildren().addAll(
-                statBox("BEST",  "O(n)"),
-                statBox("AVG",   "O(n²)"),
-                statBox("WORST", "O(n²)"));
+                statBox("BEST",  bestLabel),
+                statBox("AVG",   avgLabel),
+                statBox("WORST", worstLabel));
 
-        chartCard.getChildren().addAll(chartTitle, chartPlaceholder, chartHint, statsRow);
+        chartCard.getChildren().addAll(chartTitle, runtimeChart, statsRow);
 
-        resultPanel.getChildren().addAll(
-                resultsTitle, complexityCard, candidateCard, chartCard);
+        resultPanel.getChildren().addAll(resultsTitle, complexityCard, candidateCard, chartCard);
 
         HBox centerLayout = new HBox();
         centerLayout.getChildren().addAll(inputPanel, resultPanel);
@@ -267,12 +287,15 @@ public class Dashboard {
         root.setTop(topBar);
         root.setCenter(centerLayout);
 
-        //  CONNECT CONTROLLER
+        // CONNECT CONTROLLER
         DashboardController controller = new DashboardController(
-            codeArea, arrayField, sizeField,
-            manualBtn, runBtn,
-            complexityValue, complexityDesc, confidenceBar,
-            bestLabel, avgLabel, worstLabel
+                codeArea, arrayField, sizeField,
+                manualBtn, runBtn,
+                complexityValue, complexityDesc, confidenceBar,
+                bestLabel, avgLabel, worstLabel,
+                candidateBar1, candidateBar2, candidateBar3,
+                candidateLabel1, candidateLabel2, candidateLabel3,
+                runtimeChart   
         );
 
         runBtn.setOnAction(e -> controller.onRunAnalysis());
@@ -293,14 +316,12 @@ public class Dashboard {
                 btn.setStyle(isSelected ? selected : base));
     }
 
-    private HBox candidateRow(String label, double progress, String color) {
+    private HBox candidateRow(Label lbl, ProgressBar bar, String color) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
 
-        Label lbl = new Label(label);
         lbl.setStyle("-fx-text-fill: #ccccee; -fx-font-size: 12px; -fx-pref-width: 90;");
 
-        ProgressBar bar = new ProgressBar(progress);
         bar.setPrefWidth(Double.MAX_VALUE);
         bar.setStyle("-fx-accent: " + color + ";");
         HBox.setHgrow(bar, Priority.ALWAYS);
@@ -309,18 +330,16 @@ public class Dashboard {
         return row;
     }
 
-    private VBox statBox(String title, String value) {
+    private VBox statBox(String title, Label valueLabel) {
         VBox box = new VBox(2);
         box.setAlignment(Pos.CENTER);
         box.setPrefWidth(100);
 
         Label t = new Label(title);
         t.setStyle("-fx-text-fill: #8888aa; -fx-font-size: 10px; -fx-font-weight: bold;");
+        valueLabel.setStyle("-fx-text-fill: #00d4ff; -fx-font-size: 13px; -fx-font-weight: bold;");
 
-        Label v = new Label(value);
-        v.setStyle("-fx-text-fill: #00d4ff; -fx-font-size: 13px; -fx-font-weight: bold;");
-
-        box.getChildren().addAll(t, v);
+        box.getChildren().addAll(t, valueLabel);
         return box;
     }
 
