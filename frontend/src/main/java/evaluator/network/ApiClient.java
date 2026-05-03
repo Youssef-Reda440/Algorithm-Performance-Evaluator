@@ -8,7 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
+// import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 public class ApiClient {
@@ -22,6 +22,7 @@ public class ApiClient {
     public ApiClient() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(TIMEOUT))
+                .version(HttpClient.Version.HTTP_1_1)
                 .build();
         this.gson = new GsonBuilder().serializeNulls().create();
     }
@@ -38,9 +39,9 @@ public class ApiClient {
         // Build HTTP POST request 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/analyze"))
-                .header("Content-Type", "application/json; charset=UTF-8")
+                .header("Content-Type", "application/json")
                 .timeout(Duration.ofSeconds(TIMEOUT))
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
         // Send request and get response 
