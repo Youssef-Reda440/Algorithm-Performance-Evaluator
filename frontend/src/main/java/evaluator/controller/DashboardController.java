@@ -47,17 +47,17 @@ public class DashboardController {
             Label        complexityValue,
             Label        complexityDesc,
             ProgressBar  confidenceBar,
-            Label        bestLabel,
-            Label        avgLabel,
-            Label        worstLabel,
             ProgressBar  candidateBar1,
             ProgressBar  candidateBar2,
             ProgressBar  candidateBar3,
             Label        candidateLabel1,
             Label        candidateLabel2,
             Label        candidateLabel3,
-            LineChart<Number, Number> runtimeChart) {
-
+            LineChart<Number, Number> runtimeChart,
+            Label        bestLabel,
+            Label        avgLabel,
+            Label        worstLabel) 
+    {
         this.codeArea        = codeArea;
         this.arrayField      = arrayField;
         this.sizeField       = sizeField;
@@ -66,9 +66,6 @@ public class DashboardController {
         this.complexityValue = complexityValue;
         this.complexityDesc  = complexityDesc;
         this.confidenceBar   = confidenceBar;
-        this.bestLabel       = bestLabel;
-        this.avgLabel        = avgLabel;
-        this.worstLabel      = worstLabel;
         this.candidateBar1   = candidateBar1;
         this.candidateBar2   = candidateBar2;
         this.candidateBar3   = candidateBar3;
@@ -76,6 +73,9 @@ public class DashboardController {
         this.candidateLabel2 = candidateLabel2;
         this.candidateLabel3 = candidateLabel3;
         this.runtimeChart    = runtimeChart;
+        this.bestLabel       = bestLabel;
+        this.avgLabel        = avgLabel;
+        this.worstLabel      = worstLabel;
     }
 
     public void onRunAnalysis() {
@@ -147,12 +147,16 @@ public class DashboardController {
 
     private void updateCandidates(AnalysisResponse response) {
         var candidates = response.getCandidates();
+
+        System.out.println("Candidates: " + 
+            (candidates == null ? "NULL" : candidates.size()));
+
+        // ✅ null check before everything
         if (candidates == null || candidates.isEmpty()) return;
 
-        if (candidates.size() > 0) {
-            candidateLabel1.setText(candidates.get(0).getName());
-            candidateBar1.setProgress(candidates.get(0).getScore());
-        }
+        candidateLabel1.setText(candidates.get(0).getName());
+        candidateBar1.setProgress(candidates.get(0).getScore());
+
         if (candidates.size() > 1) {
             candidateLabel2.setText(candidates.get(1).getName());
             candidateBar2.setProgress(candidates.get(1).getScore());

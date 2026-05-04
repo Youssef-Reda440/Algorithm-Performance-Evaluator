@@ -3,7 +3,9 @@ import os
 
 sys.path.append(os.path.dirname(__file__))
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException ,Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from models.schemas import AnalysisRequest, AnalysisResponse, ChartPoint, Candidate
@@ -78,6 +80,15 @@ def build_response(results, best_results, worst_results, chart_data) -> Analysis
         worst       = worst_analysis["complexity"],
         chart_data  = chart_data,
         candidates  = candidates
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print(f"422 Error: {exc.errors()}")
+    print(f"Body: {await request.body()}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()}
     )
 
 @app.get("/")
