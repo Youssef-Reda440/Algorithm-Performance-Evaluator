@@ -42,7 +42,7 @@ public class AnalysisResponse {
     public List<ChartPoint> getWorstChartData() { return worst_chart_data; }
     public List<Candidate>  getCandidates()     { return candidates; }
 
-    // FALLBACK => Return safe defaults if Python returns null
+    // FALLBACK => Return Safe defaults if Python returns null
     public String getComplexitySafe() {
         return complexity != null ? complexity : "Unknown";
     }

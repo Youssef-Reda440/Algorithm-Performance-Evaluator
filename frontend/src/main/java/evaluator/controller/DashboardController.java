@@ -33,7 +33,7 @@ public class DashboardController {
     private final Label         candidateLabel2;
     private final Label         candidateLabel3;
 
-    // Chart 
+    // chart 
     private final LineChart<Number, Number> runtimeChart;
 
     private final ApiClient apiClient = new ApiClient();
