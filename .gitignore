@@ -16,5 +16,8 @@ frontend/target/
 .vscode/
 
 # Environment
-.env
+backend/.env
+
+# model-info.java
+frontend/model-info.java
 
