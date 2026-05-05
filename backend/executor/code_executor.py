@@ -14,15 +14,17 @@ class CodeExecutor:
         except Exception as e:
             raise RuntimeError(f"Code execution error:\n{traceback.format_exc()}")
 
-        if "my_algorithm" not in local_vars:
-            raise RuntimeError(
-                "Function 'my_algorithm' not found!\n"
-                "Please define your algorithm as:\n"
-                "def my_algorithm(arr):\n"
-                "    ...")
+        func = None
+        for name, obj in local_vars.items():
+            if callable(obj):
+                func = obj
+                break
+
+        if func is None:
+            raise RuntimeError("No function found!\nPlease define at least one function.")
 
         try:
-            result = local_vars["my_algorithm"](arr.copy())
+            result = func(arr.copy())
         except Exception as e:
             raise RuntimeError(f"Error running my_algorithm:\n{traceback.format_exc()}")
 
