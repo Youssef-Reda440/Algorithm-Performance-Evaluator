@@ -88,7 +88,7 @@ mvn clean javafx:run
 
 ## UI
 
-![Dashboard]{Assets/Dashboard.png}
+![Dashboard](Assets/Dashboard.png)
 
 ---
 
