@@ -16,7 +16,7 @@ class Timer:
         time_ms = (end - start) * 1000
         return time_ms
 
-    def measure_average(self, code: str, arr: list[int], runs: int = 5) -> float:
+    def measure_average(self, code: str, arr: list[int], runs: int = 4) -> float:
         try :
             # Warm Up 
             self.executor.execute(code, arr)

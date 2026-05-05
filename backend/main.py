@@ -33,16 +33,6 @@ generator = InputGenerator()
 MAX_TIME_MS  = 2000 
 MIN_TIME_MS  = 0.1   
 
-def probe_speed(code: str) -> float:
-    """Run quick test on small array to detect algorithm speed"""
-    try:
-        probe_arr  = generator.generate_random(100)
-        probe_time = timer.measure_average(code, probe_arr, runs=2)
-        print(f"Probe time at n=100: {probe_time}ms")
-        return probe_time
-    except Exception:
-        return 1.0  # default to medium speed if probe fails
-
 def run_benchmark(code: str, sizes: list[int]) -> tuple:
 
     results          = []
@@ -118,9 +108,7 @@ def health_check():
 def analyze(request: AnalysisRequest):
 
     try:
-        # Probe speed → get adaptive sizes 
-        probe_time = probe_speed(request.code)
-        sizes      = generator.get_adaptive_sizes(probe_time)
+        sizes = generator.get_Auto_Sizes()
 
         if request.mode == "MANUAL":
             arr     = generator.parse_array(request.array)
