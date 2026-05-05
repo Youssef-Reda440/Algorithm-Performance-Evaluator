@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-// import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 public class ApiClient {
@@ -47,7 +46,7 @@ public class ApiClient {
         // Send request and get response 
         HttpResponse<String> response = httpClient.send(
                 request,
-                HttpResponse.BodyHandlers.ofString());
+                HttpResponse.BodyHandlers.ofString(java.nio.charset.StandardCharsets.UTF_8));
 
         if (response.statusCode() != 200) {
             throw new Exception("Server error: " + response.statusCode()

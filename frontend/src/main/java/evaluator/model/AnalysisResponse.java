@@ -10,32 +10,37 @@ public class AnalysisResponse {
     private String best;           
     private String avg;             
     private String worst;         
-    private List<ChartPoint> chart_data; 
+    private List<ChartPoint> best_chart_data;
+    private List<ChartPoint> avg_chart_data; 
+    private List<ChartPoint> worst_chart_data; 
     private List<Candidate> candidates;
     
     public static class ChartPoint {
-        private int n;         
-        private double time;    
+        public int n;         
+        public double time;    
 
         public int getN()         { return n; }
         public double getTime()   { return time; }
     }
 
     public static class Candidate {
-        private String name;
-        private double score;
+        public String name;
+        public double score;
+
         public String getName()  { return name; }
         public double getScore() { return score; }
     }
 
-    public String getComplexity()           { return complexity; }
-    public String getDescription()          { return description; }
-    public double getConfidence()           { return confidence; }
-    public String getBest()                 { return best; }
-    public String getAvg()                  { return avg; }
-    public String getWorst()                { return worst; }
-    public List<ChartPoint> getChartData()  { return chart_data; }
-    public List<Candidate>  getCandidates() { return candidates; }
+    public String getComplexity()               { return complexity; }
+    public String getDescription()              { return description; }
+    public double getConfidence()               { return confidence; }
+    public String getBest()                     { return best; }
+    public String getAvg()                      { return avg; }
+    public String getWorst()                    { return worst; }
+    public List<ChartPoint> getBestChartData()  { return best_chart_data; }
+    public List<ChartPoint> getAvgChartData()   { return avg_chart_data; }
+    public List<ChartPoint> getWorstChartData() { return worst_chart_data; }
+    public List<Candidate>  getCandidates()     { return candidates; }
 
     // FALLBACK => Return safe defaults if Python returns null
     public String getComplexitySafe() {

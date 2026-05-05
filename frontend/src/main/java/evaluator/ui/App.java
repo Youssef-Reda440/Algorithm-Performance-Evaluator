@@ -11,8 +11,6 @@ public class App extends Application {
         Dashboard dashboard = new Dashboard();
         
         Scene scene = new Scene(dashboard.getView(), 1200, 750);
-
-        // CSS will be added later
         
         stage.setTitle("Algorithm Performance Evaluator");
         stage.setScene(scene);

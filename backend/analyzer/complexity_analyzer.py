@@ -3,12 +3,12 @@ import math
 class ComplexityAnalyzer:
 
     FUNCTIONS = {
-        "O(1)"      : lambda n: 1,
-        "O(log n)"  : lambda n: math.log2(n),
-        "O(n)"      : lambda n: n,
-        "O(n log n)": lambda n: n * math.log2(n),
-        "O(n²)"     : lambda n: n ** 2,
-        "O(n³)"     : lambda n: n ** 3,
+        "O(1)"       : lambda n: 1,
+        "O(log n)"   : lambda n: (math.log2(n) if n > 1 else 1) * 1.05,
+        "O(n)"       : lambda n: n,
+        "O(n log n)" : lambda n: n * (math.log2(n) if n > 1 else 1) * 1.05,
+        "O(n^2)"     : lambda n: n ** 2,
+        "O(n^3)"     : lambda n: n ** 3,
     }
 
     def analyze(self, results: list[dict]) -> dict:
@@ -39,16 +39,18 @@ class ComplexityAnalyzer:
             if f > 0 and time > 0:
                 ratios.append(time / f)
 
-        if len(ratios) < 2:
+        if len(ratios) < 3:
             return float("inf")
+        
+        ratios.sort()
+        trim = max(1, len(ratios) // 10)
+        trimmed_ratios = ratios[trim:-trim] if len(ratios) > 5 else ratios
 
-        mean = sum(ratios) / len(ratios)
+        mean = sum(trimmed_ratios) / len(trimmed_ratios)
         if mean == 0:
             return float("inf")
 
-        std_dev = math.sqrt(
-            sum((r - mean) ** 2 for r in ratios) / len(ratios)
-        )
+        std_dev = math.sqrt(sum((r - mean) ** 2 for r in trimmed_ratios) / len(trimmed_ratios))
 
         return std_dev / mean
 
@@ -82,8 +84,8 @@ class ComplexityAnalyzer:
             "O(log n)"  : "Logarithmic — very efficient, typical in binary search",
             "O(n)"      : "Linear — execution time grows with input size",
             "O(n log n)": "Linearithmic — efficient sorting like merge sort",
-            "O(n²)"     : "Quadratic — nested loop pattern detected",
-            "O(n³)"     : "Cubic — triple nested loop pattern detected",
+            "O(n^2)"     : "Quadratic — nested loop pattern detected",
+            "O(n^3)"     : "Cubic — triple nested loop pattern detected",
         }
         return descriptions.get(complexity, "Unknown complexity")
     

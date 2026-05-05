@@ -20,11 +20,13 @@ class Candidate(BaseModel):
 
 # RESPONSE
 class AnalysisResponse(BaseModel):
-    complexity : str
-    description: str
-    confidence : float
-    best       : str
-    avg        : str
-    worst      : str
-    chart_data : List[ChartPoint] = Field(default_factory=list)
-    candidates : List[Candidate]   = Field(default_factory=list)
+    complexity       : str
+    description      : str
+    confidence       : float
+    candidates       : List[Candidate]  = Field(default_factory=list)
+    best_chart_data  : List[ChartPoint] = Field(default_factory=list)
+    avg_chart_data   : List[ChartPoint] = Field(default_factory=list)
+    worst_chart_data : List[ChartPoint] = Field(default_factory=list)
+    best             : str
+    avg              : str
+    worst            : str
