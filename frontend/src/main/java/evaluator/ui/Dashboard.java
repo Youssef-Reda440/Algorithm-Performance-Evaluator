@@ -17,7 +17,6 @@ public class Dashboard {
 
     private final BorderPane root;
 
-    // ── Instance Variables — shared between UI and Controller ────────────────
     private Label       complexityValue;
     private Label       complexityDesc;
     private ProgressBar confidenceBar;
@@ -37,7 +36,7 @@ public class Dashboard {
         root = new BorderPane();
         root.setStyle("-fx-background-color: #1a1a2e;");
 
-        // ── TOP BAR ──────────────────────────────────────────────────────────
+        // TOP BAR
         HBox topBar = new HBox(20);
         topBar.setPadding(new Insets(14, 20, 14, 20));
         topBar.setAlignment(Pos.CENTER_LEFT);
@@ -90,7 +89,7 @@ public class Dashboard {
 
         topBar.getChildren().addAll(titleFlow, spacer, manualBtn, autoBtn, runBtn);
 
-        // ── LEFT PANEL ───────────────────────────────────────────────────────
+        // LEFT PANEL
         VBox inputPanel = new VBox(10);
         inputPanel.setPadding(new Insets(16));
         inputPanel.setStyle("-fx-background-color: #12122a;");
@@ -182,32 +181,32 @@ public class Dashboard {
 
         bottomBar.getChildren().addAll(arrayLabel, arrayField, sizeLabel, sizeField, nLabel);
         inputPanel.getChildren().addAll(editorHeader, codeArea, bottomBar);
-        HBox.setHgrow(inputPanel, Priority.ALWAYS);
+        inputPanel.setPrefWidth(700);
 
-        // ── INITIALIZE INSTANCE VARIABLES ────────────────────────────────────
-        complexityValue = new Label("O(n\u00B2)");
+        // INITIALIZE INSTANCE VARIABLES
+        complexityValue = new Label("...");
         complexityValue.setStyle("-fx-text-fill: #00d4ff; -fx-font-size: 28px; "
                 + "-fx-font-weight: bold;");
 
-        complexityDesc = new Label("Quadratic \u2014 nested loop pattern detected");
+        complexityDesc = new Label("Quadratic — nested loop pattern detected");
         complexityDesc.setStyle("-fx-text-fill: #aaaacc; -fx-font-size: 11px;");
 
-        confidenceBar = new ProgressBar(0.92);
+        confidenceBar = new ProgressBar(0);
         confidenceBar.setPrefWidth(Double.MAX_VALUE);
         confidenceBar.setStyle("-fx-accent: #00d4ff;");
 
-        candidateLabel1 = new Label("O(n\u00B2)");
-        candidateLabel2 = new Label("O(n log n)");
-        candidateLabel3 = new Label("O(n\u00B3)");
-        candidateBar1   = new ProgressBar(0.90);
-        candidateBar2   = new ProgressBar(0.30);
-        candidateBar3   = new ProgressBar(0.10);
+        candidateLabel1 = new Label("...");
+        candidateLabel2 = new Label("...");
+        candidateLabel3 = new Label("...");
+        candidateBar1   = new ProgressBar(0);
+        candidateBar2   = new ProgressBar(0);
+        candidateBar3   = new ProgressBar(0);
 
-        bestLabel  = new Label("O(n)");
-        avgLabel   = new Label("O(n\u00B2)");
-        worstLabel = new Label("O(n\u00B2)");
+        bestLabel  = new Label("...");
+        avgLabel   = new Label("...");
+        worstLabel = new Label("...");
 
-        // ── RIGHT PANEL ──────────────────────────────────────────────────────
+        // RIGHT PANEL 
         VBox resultPanel = new VBox(16);
         resultPanel.setPadding(new Insets(16));
         resultPanel.setPrefWidth(340);
@@ -290,6 +289,7 @@ public class Dashboard {
 
         chartCard.getChildren().addAll(chartTitle, runtimeChart, statsRow);
         resultPanel.getChildren().addAll(resultsTitle, complexityCard, candidateCard, chartCard);
+        HBox.setHgrow(resultPanel, Priority.ALWAYS);
 
         HBox centerLayout = new HBox();
         centerLayout.getChildren().addAll(inputPanel, resultPanel);
@@ -297,13 +297,13 @@ public class Dashboard {
         root.setTop(topBar);
         root.setCenter(centerLayout);
 
-        // ── CONNECT CONTROLLER ───────────────────────────────────────────────
+        // CONNECT CONTROLLER
         DashboardController controller = new DashboardController(
                 codeArea, arrayField, sizeField,
                 manualBtn, runBtn,
                 complexityValue, complexityDesc, confidenceBar,
-                candidateBar1, candidateBar2, candidateBar3,
                 candidateLabel1, candidateLabel2, candidateLabel3,
+                candidateBar1, candidateBar2, candidateBar3,
                 runtimeChart, bestLabel, avgLabel, worstLabel
         );
 
@@ -324,11 +324,13 @@ public class Dashboard {
                 btn.setStyle(isSelected ? selected : base));
     }
 
-    private HBox candidateRow(Label lbl, ProgressBar bar, String color) {
+    private HBox candidateRow(Label lbl, ProgressBar bar, String color) {   
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
-        lbl.setStyle("-fx-text-fill: #ccccee; -fx-font-size: 12px; -fx-pref-width: 90;");
-        bar.setPrefWidth(Double.MAX_VALUE);
+        lbl.setMinWidth(80);
+        lbl.setPrefWidth(80);
+        lbl.setStyle("-fx-text-fill: #ccccee; -fx-font-size: 12px;");
+        bar.setPrefWidth(600);  
         bar.setStyle("-fx-accent: " + color + ";");
         HBox.setHgrow(bar, Priority.ALWAYS);
         row.getChildren().addAll(lbl, bar);
