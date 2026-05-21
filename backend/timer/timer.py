@@ -26,10 +26,8 @@ class Timer:
                 t = self.measure(code, arr)
                 times.append(t)
 
-            # Remove min and max then -> take median
             times.sort()
-            trimmed = times[1:-1] if len(times) > 3 else times
-            return round(statistics.median(trimmed), 4)
+            return round(statistics.mean(times), 4)
 
         except Exception as e:
             raise RuntimeError(f"Measurement failed at n={len(arr)}:\n{traceback.format_exc()}")

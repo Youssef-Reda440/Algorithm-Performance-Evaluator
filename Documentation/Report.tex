@@ -236,23 +236,12 @@ Additionally, it adapts input sizes based on the algorithm’s initial execution
 import random
 
 class InputGenerator:
- 
-    def get_adaptive_sizes(self, probe_time: float) -> list[int]:
-        if probe_time < 0.1:
-            return [5000, 10000, 20000, 30000, 50000]
- 
-        elif probe_time < 1.0:
-            return [1000, 2000, 3000, 5000, 8000, 10000]
- 
-        elif probe_time < 10.0:
-            return [500, 1000, 1500, 2000, 2500, 3000]
- 
-        else:
-            return [100, 200, 300, 500, 700, 1000]
-    
+
+    AUTO_SIZES = [500, 1000, 1500, 2000, 2500, 3000]
+
     def generate_random(self, n: int) -> list[int]:
         if n <= 0:
-            raise ValueError("Size_must_be_positive")
+            raise ValueError("Size must be positive")
         return [random.randint(1, 1000) for _ in range(n)]
 
     def generate_sorted(self, n: int) -> list[int]:
@@ -271,7 +260,10 @@ class InputGenerator:
         try:
             return [int(x) for x in array_str.strip().split()]
         except ValueError:
-            raise ValueError("Invalid_array_input.Use_space-separated_integers.")
+            raise ValueError("Invalid array input. Use space-separated integers.")
+        
+    def get_Auto_Sizes(self) -> list[int]:
+        return self.AUTO_SIZES
 
 \end{lstlisting}
 
@@ -321,7 +313,7 @@ class CodeExecutor:
 
 The Timer component is responsible for measuring the execution time of the algorithm with high precision. It uses a performance-based clock to calculate the runtime in milliseconds for accurate evaluation.
 
-To improve measurement reliability, the system executes the algorithm multiple times and computes a representative value by removing outliers and taking the median. It also performs an initial warm-up run to stabilize execution performance.
+To improve measurement reliability, the system executes the algorithm multiple times and computes the average. It also performs an initial warm-up run to stabilize execution performance.
 
 This approach ensures consistent and accurate timing results, which are essential for analyzing performance trends and estimating complexity.
 
@@ -382,6 +374,10 @@ To ensure stability, the analyzer calculates the coefficient of variation (CV) o
 $$
 CV = \frac{\sigma}{\mu}
 $$
+
+\[
+\sigma = \sqrt{\frac{\sum_{i=1}^{n}(x_i - \mu)^2}{n}}
+\]
 
 where $\mu$ is the mean and $\sigma$ is the standard deviation. A lower CV indicates a better fit between the function and the observed data.
 

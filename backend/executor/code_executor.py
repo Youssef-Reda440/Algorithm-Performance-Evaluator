@@ -2,13 +2,13 @@ import traceback
 
 class CodeExecutor:
 
-    def execute(self, code: str, arr: list[int]) -> list[int]:
+    def execute(self, code: str, arr: list[int]):
 
-        # Create safe environment
-        safe_globals = {"__builtins__": self._safe_builtins()}
+        # Create environment with full builtins 
+        safe_globals = {"__builtins__": __builtins__}
         local_vars   = {"arr": arr.copy()}
 
-        # Execute code
+        # Execute user code 
         try:
             exec(code, safe_globals, local_vars)
         except Exception as e:
@@ -21,41 +21,16 @@ class CodeExecutor:
                 break
 
         if func is None:
-            raise RuntimeError("No function found!\nPlease define at least one function.")
+            raise RuntimeError(
+                "No function found!\n"
+                "Please define at least one function.\n"
+                "Example:\n"
+                "def my_algorithm(arr):\n"
+                "    ...")
 
         try:
             result = func(arr.copy())
         except Exception as e:
-            raise RuntimeError(f"Error running my_algorithm:\n{traceback.format_exc()}")
+            raise RuntimeError(f"Error running function:\n{traceback.format_exc()}")
 
         return result
-
-    # SAFE BUILTINS
-    def _safe_builtins(self) -> dict:
-        return {
-            "range"     : range,
-            "len"       : len,
-            "print"     : print,
-            "enumerate" : enumerate,
-            "zip"       : zip,
-            "map"       : map,
-            "filter"    : filter,
-            "sorted"    : sorted,
-            "reversed"  : reversed,
-            "min"       : min,
-            "max"       : max,
-            "sum"       : sum,
-            "abs"       : abs,
-            "round"     : round,
-
-            "int"       : int,
-            "float"     : float,
-            "str"       : str,
-            "list"      : list,
-            "tuple"     : tuple,
-            "bool"      : bool,
-
-            # Math
-            "pow"       : pow,
-            "divmod"    : divmod,
-        }
